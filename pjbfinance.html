@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pencatatan - PT PANDAWA JAYA BERSATU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(132, 250, 176, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(250, 112, 154, 0.4);
+        }
+        
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+        
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        .tab-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(.33);
+            }
+            80%, 100% {
+                opacity: 0;
+            }
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .floating-label {
+            transition: all 0.3s ease;
+        }
+        
+        .floating-label.active {
+            transform: translateY(-20px) scale(0.8);
+            color: #667eea;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-10">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0); background-size: 20px 20px;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="glass-effect rounded-2xl p-8 mb-8 text-center fade-in">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg">
+                    <i data-lucide="building-2" class="w-8 h-8 text-indigo-600"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-white mb-2">PT PANDAWA JAYA BERSATU</h1>
+                    <p class="text-white/80 text-lg">Sistem Pencatatan Pemasukan & Pengeluaran</p>
+                </div>
+            </div>
+            <div class="flex justify-center space-x-4 mt-6">
+                <div class="stats-card rounded-xl p-4 text-white">
+                    <div class="flex items-center">
+                        <i data-lucide="trending-up" class="w-6 h-6 mr-2"></i>
+                        <span class="text-sm">Real-time Tracking</span>
+                    </div>
+                </div>
+                <div class="stats-card rounded-xl p-4 text-white">
+                    <div class="flex items-center">
+                        <i data-lucide="shield-check" class="w-6 h-6 mr-2"></i>
+                        <span class="text-sm">Secure Data</span>
+                    </div>
+                </div>
+                <div class="stats-card rounded-xl p-4 text-white">
+                    <div class="flex items-center">
+                        <i data-lucide="download" class="w-6 h-6 mr-2"></i>
+                        <span class="text-sm">Export Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="glass-effect rounded-2xl mb-8 p-2 fade-in">
+            <div class="flex space-x-2">
+                <button onclick="showTab('transaksi')" id="tab-transaksi" class="flex-1 py-4 px-6 rounded-xl font-medium transition-all duration-300 tab-active flex items-center justify-center">
+                    <i data-lucide="credit-card" class="w-5 h-5 mr-2"></i>
+                    Transaksi
+                </button>
+                <button onclick="showTab('karyawan')" id="tab-karyawan" class="flex-1 py-4 px-6 rounded-xl font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center">
+                    <i data-lucide="users" class="w-5 h-5 mr-2"></i>
+                    Karyawan
+                </button>
+                <button onclick="showTab('laporan')" id="tab-laporan" class="flex-1 py-4 px-6 rounded-xl font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2"></i>
+                    Laporan
+                </button>
+            </div>
+        </div>
+
+        <!-- Transaksi Tab -->
+        <div id="content-transaksi" class="tab-content fade-in">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <!-- Form Input Transaksi -->
+                <div class="xl:col-span-1">
+                    <div class="glass-effect rounded-2xl p-8 card-hover">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                                <i data-lucide="plus" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white">Input Transaksi</h2>
+                        </div>
+                        
+                        <form id="transaksiForm" class="space-y-6">
+                            <div class="relative">
+                                <select id="jenisTransaksi" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                                    <option value="Pemasukan" class="text-gray-800">💰 Pemasukan</option>
+                                    <option value="Pengeluaran" class="text-gray-800">💸 Pengeluaran</option>
+                                </select>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">Jenis Transaksi</label>
+                            </div>
+
+                            <div class="relative">
+                                <select id="kategoriTransaksi" onchange="handleKategoriChange()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                                    <option value="Sparepart" class="text-gray-800">🔧 Sparepart</option>
+                                    <option value="Solar" class="text-gray-800">⛽ Solar</option>
+                                    <option value="Konsumsi" class="text-gray-800">🍽️ Konsumsi</option>
+                                    <option value="Gaji" class="text-gray-800">💼 Gaji</option>
+                                    <option value="Sewa Alat" class="text-gray-800">🏗️ Sewa Alat</option>
+                                    <option value="Lain-lain" class="text-gray-800">📋 Lain-lain</option>
+                                </select>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">Kategori</label>
+                            </div>
+
+                            <div class="relative">
+                                <input type="date" id="tanggalTransaksi" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" required>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">Tanggal</label>
+                            </div>
+
+                            <div class="relative">
+                                <textarea id="deskripsiTransaksi" rows="3" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus placeholder-white/50" placeholder="Deskripsi transaksi..."></textarea>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">Deskripsi</label>
+                            </div>
+
+                            <div id="solarFields" class="hidden space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="relative">
+                                        <input type="number" id="hargaPerLiter" onchange="calculateSolarTotal()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="0">
+                                        <label class="absolute -top-2 left-2 bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs px-2 py-1 rounded-lg">Harga/Liter</label>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="number" id="jumlahLiter" onchange="calculateSolarTotal()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="0">
+                                        <label class="absolute -top-2 left-2 bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs px-2 py-1 rounded-lg">Jumlah Liter</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="normalFields" class="grid grid-cols-2 gap-4">
+                                <div class="relative">
+                                    <input type="number" id="hargaSatuan" onchange="calculateNormalTotal()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="0">
+                                    <label class="absolute -top-2 left-2 bg-gradient-to-r from-green-500 to-blue-600 text-white text-xs px-2 py-1 rounded-lg">Harga Satuan</label>
+                                </div>
+                                <div class="relative">
+                                    <input type="number" id="jumlahBarang" onchange="calculateNormalTotal()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="0">
+                                    <label class="absolute -top-2 left-2 bg-gradient-to-r from-green-500 to-blue-600 text-white text-xs px-2 py-1 rounded-lg">Jumlah</label>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <input type="number" id="totalHarga" class="w-full p-4 bg-gradient-to-r from-yellow-400 to-orange-500 border-0 rounded-xl text-white font-bold text-lg" readonly>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-yellow-600 to-orange-700 text-white text-xs px-2 py-1 rounded-lg">💰 Total</label>
+                            </div>
+
+                            <div class="relative">
+                                <input type="file" id="buktiTransaksi" accept=".jpg,.jpeg,.png,.pdf" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-gradient-to-r file:from-blue-500 file:to-purple-600 file:text-white file:cursor-pointer">
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">📎 Upload Bukti</label>
+                            </div>
+
+                            <button type="submit" class="w-full btn-primary text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center">
+                                <i data-lucide="save" class="w-5 h-5 mr-2"></i>
+                                Simpan Transaksi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabel Transaksi -->
+                <div class="xl:col-span-2">
+                    <div class="glass-effect rounded-2xl p-8 card-hover">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                                    <i data-lucide="list" class="w-6 h-6 text-white"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold text-white">Data Transaksi</h2>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="exportTransaksiToExcel()" class="btn-success text-white px-6 py-3 rounded-xl font-medium flex items-center">
+                                    <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2"></i>
+                                    Excel
+                                </button>
+                                <button onclick="exportTransaksiToPDF()" class="btn-danger text-white px-6 py-3 rounded-xl font-medium flex items-center">
+                                    <i data-lucide="file-text" class="w-4 h-4 mr-2"></i>
+                                    PDF
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/5 rounded-xl overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-white/10">
+                                        <tr>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">📅 Tanggal</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">🏷️ Jenis</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">📂 Kategori</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">💰 Total</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">⚙️ Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transaksiTableBody" class="divide-y divide-white/10">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karyawan Tab -->
+        <div id="content-karyawan" class="tab-content hidden">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <!-- Form Input Karyawan -->
+                <div class="xl:col-span-1">
+                    <div class="glass-effect rounded-2xl p-8 card-hover">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mr-4">
+                                <i data-lucide="user-plus" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white">Input Karyawan</h2>
+                        </div>
+                        
+                        <form id="karyawanForm" class="space-y-6">
+                            <div class="relative">
+                                <input type="text" id="idKaryawan" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="K001" required>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">🆔 ID Karyawan</label>
+                            </div>
+
+                            <div class="relative">
+                                <input type="text" id="namaKaryawan" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="Nama lengkap" required>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">👤 Nama</label>
+                            </div>
+
+                            <div class="relative">
+                                <select id="posisiKaryawan" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                                    <option value="Operator" class="text-gray-800">🔧 Operator</option>
+                                    <option value="Supervisor" class="text-gray-800">👨‍💼 Supervisor</option>
+                                    <option value="Manager" class="text-gray-800">👔 Manager</option>
+                                    <option value="Admin" class="text-gray-800">📋 Admin</option>
+                                    <option value="Teknisi" class="text-gray-800">🔨 Teknisi</option>
+                                </select>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">💼 Posisi</label>
+                            </div>
+
+                            <div class="relative">
+                                <select id="shiftKaryawan" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                                    <option value="Pagi" class="text-gray-800">🌅 Pagi (07:00-15:00)</option>
+                                    <option value="Siang" class="text-gray-800">☀️ Siang (15:00-23:00)</option>
+                                    <option value="Malam" class="text-gray-800">🌙 Malam (23:00-07:00)</option>
+                                </select>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">⏰ Shift</label>
+                            </div>
+
+                            <div class="relative">
+                                <select id="hmInputType" onchange="toggleHMInput()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                                    <option value="waktu" class="text-gray-800">⏱️ Input Waktu (Jam Mulai - Jam Selesai)</option>
+                                    <option value="langsung" class="text-gray-800">🔢 Input Langsung (Float HM)</option>
+                                </select>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs px-2 py-1 rounded-lg">📊 Input HM</label>
+                            </div>
+
+                            <div id="hmWaktuFields" class="grid grid-cols-2 gap-4">
+                                <div class="relative">
+                                    <input type="time" id="jamMulai" onchange="calculateHM()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus">
+                                    <label class="absolute -top-2 left-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">🕐 Jam Mulai</label>
+                                </div>
+                                <div class="relative">
+                                    <input type="time" id="jamSelesai" onchange="calculateHM()" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus">
+                                    <label class="absolute -top-2 left-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">🕐 Jam Selesai</label>
+                                </div>
+                            </div>
+
+                            <div id="hmLangsungField" class="hidden relative">
+                                <input type="number" step="0.1" id="hmLangsung" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus" placeholder="0.0">
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs px-2 py-1 rounded-lg">⏱️ Total HM</label>
+                            </div>
+
+                            <div class="relative">
+                                <input type="number" step="0.1" id="totalJam" class="w-full p-4 bg-gradient-to-r from-indigo-500 to-purple-600 border-0 rounded-xl text-white font-bold text-lg" readonly>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-indigo-700 to-purple-800 text-white text-xs px-2 py-1 rounded-lg">⏰ Total Jam</label>
+                            </div>
+
+                            <div class="relative">
+                                <textarea id="laporanAktivitas" rows="4" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus placeholder-white/50" placeholder="Deskripsi aktivitas harian..."></textarea>
+                                <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">📝 Laporan Aktivitas</label>
+                            </div>
+
+                            <button type="submit" class="w-full btn-success text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center">
+                                <i data-lucide="user-check" class="w-5 h-5 mr-2"></i>
+                                Simpan Karyawan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabel Karyawan -->
+                <div class="xl:col-span-2">
+                    <div class="glass-effect rounded-2xl p-8 card-hover">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mr-4">
+                                    <i data-lucide="users" class="w-6 h-6 text-white"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold text-white">Data Karyawan</h2>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="exportKaryawanToExcel()" class="btn-success text-white px-6 py-3 rounded-xl font-medium flex items-center">
+                                    <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2"></i>
+                                    Excel
+                                </button>
+                                <button onclick="exportKaryawanToPDF()" class="btn-danger text-white px-6 py-3 rounded-xl font-medium flex items-center">
+                                    <i data-lucide="file-text" class="w-4 h-4 mr-2"></i>
+                                    PDF
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/5 rounded-xl overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-white/10">
+                                        <tr>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">🆔 ID</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">👤 Nama</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">💼 Posisi</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">⏰ Shift</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">📊 Total HM</th>
+                                            <th class="px-6 py-4 text-left font-semibold text-white">⚙️ Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="karyawanTableBody" class="divide-y divide-white/10">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Laporan Tab -->
+        <div id="content-laporan" class="tab-content hidden">
+            <div class="glass-effect rounded-2xl p-8 card-hover">
+                <div class="flex items-center mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white">Laporan Keuangan</h2>
+                </div>
+                
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="stats-card rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="trending-up" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-white/70 text-sm font-medium mb-2">💰 Total Pemasukan</h3>
+                        <p id="totalPemasukan" class="text-3xl font-bold text-green-400">Rp 0</p>
+                    </div>
+                    
+                    <div class="stats-card rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="trending-down" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-white/70 text-sm font-medium mb-2">💸 Total Pengeluaran</h3>
+                        <p id="totalPengeluaran" class="text-3xl font-bold text-red-400">Rp 0</p>
+                    </div>
+                    
+                    <div class="stats-card rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="wallet" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-white/70 text-sm font-medium mb-2">💎 Saldo</h3>
+                        <p id="saldo" class="text-3xl font-bold text-blue-400">Rp 0</p>
+                    </div>
+                </div>
+
+                <!-- Category Summary -->
+                <div class="bg-white/5 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                        <i data-lucide="pie-chart" class="w-6 h-6 mr-2"></i>
+                        Ringkasan per Kategori
+                    </h3>
+                    <div id="kategoriSummary" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Category items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Transaksi -->
+    <div id="editTransaksiModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-2xl p-8 w-full max-w-md mx-4 slide-in">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                    <i data-lucide="edit" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Edit Transaksi</h3>
+            </div>
+            <form id="editTransaksiForm" class="space-y-6">
+                <input type="hidden" id="editTransaksiId">
+                <div class="relative">
+                    <select id="editJenisTransaksi" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                        <option value="Pemasukan" class="text-gray-800">💰 Pemasukan</option>
+                        <option value="Pengeluaran" class="text-gray-800">💸 Pengeluaran</option>
+                    </select>
+                    <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">Jenis Transaksi</label>
+                </div>
+                <div class="relative">
+                    <select id="editKategoriTransaksi" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                        <option value="Sparepart" class="text-gray-800">🔧 Sparepart</option>
+                        <option value="Solar" class="text-gray-800">⛽ Solar</option>
+                        <option value="Konsumsi" class="text-gray-800">🍽️ Konsumsi</option>
+                        <option value="Gaji" class="text-gray-800">💼 Gaji</option>
+                        <option value="Sewa Alat" class="text-gray-800">🏗️ Sewa Alat</option>
+                        <option value="Lain-lain" class="text-gray-800">📋 Lain-lain</option>
+                    </select>
+                    <label class="absolute -top-2 left-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs px-2 py-1 rounded-lg">Kategori</label>
+                </div>
+                <div class="relative">
+                    <input type="number" id="editTotalHarga" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus">
+                    <label class="absolute -top-2 left-4 bg-gradient-to-r from-yellow-500 to-orange-600 text-white text-xs px-2 py-1 rounded-lg">💰 Total</label>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 btn-primary text-white py-3 px-6 rounded-xl font-medium flex items-center justify-center">
+                        <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+                        Update
+                    </button>
+                    <button type="button" onclick="closeEditTransaksiModal()" class="flex-1 bg-gray-500/50 text-white py-3 px-6 rounded-xl font-medium hover:bg-gray-500/70 transition-all duration-300 flex items-center justify-center">
+                        <i data-lucide="x" class="w-4 h-4 mr-2"></i>
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Karyawan -->
+    <div id="editKaryawanModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-2xl p-8 w-full max-w-md mx-4 slide-in">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mr-4">
+                    <i data-lucide="user-cog" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Edit Karyawan</h3>
+            </div>
+            <form id="editKaryawanForm" class="space-y-6">
+                <input type="hidden" id="editKaryawanId">
+                <div class="relative">
+                    <input type="text" id="editNamaKaryawan" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus">
+                    <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">👤 Nama</label>
+                </div>
+                <div class="relative">
+                    <select id="editPosisiKaryawan" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus appearance-none">
+                        <option value="Operator" class="text-gray-800">🔧 Operator</option>
+                        <option value="Supervisor" class="text-gray-800">👨‍💼 Supervisor</option>
+                        <option value="Manager" class="text-gray-800">👔 Manager</option>
+                        <option value="Admin" class="text-gray-800">📋 Admin</option>
+                        <option value="Teknisi" class="text-gray-800">🔨 Teknisi</option>
+                    </select>
+                    <label class="absolute -top-2 left-4 bg-gradient-to-r from-green-500 to-teal-600 text-white text-xs px-2 py-1 rounded-lg">💼 Posisi</label>
+                </div>
+                <div class="relative">
+                    <input type="number" step="0.1" id="editTotalJam" class="w-full p-4 bg-white/10 border border-white/20 rounded-xl text-white input-focus">
+                    <label class="absolute -top-2 left-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs px-2 py-1 rounded-lg">⏰ Total HM</label>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 btn-success text-white py-3 px-6 rounded-xl font-medium flex items-center justify-center">
+                        <i data-lucide="check" class="w-4 h-4 mr-2"></i>
+                        Update
+                    </button>
+                    <button type="button" onclick="closeEditKaryawanModal()" class="flex-1 bg-gray-500/50 text-white py-3 px-6 rounded-xl font-medium hover:bg-gray-500/70 transition-all duration-300 flex items-center justify-center">
+                        <i data-lucide="x" class="w-4 h-4 mr-2"></i>
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Data storage
+        let transaksiData = JSON.parse(localStorage.getItem('transaksiData')) || [];
+        let karyawanData = JSON.parse(localStorage.getItem('karyawanData')) || [];
+        let editingTransaksiId = null;
+        let editingKaryawanId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date
+            document.getElementById('tanggalTransaksi').value = new Date().toISOString().split('T')[0];
+            
+            // Load existing data
+            loadTransaksiTable();
+            loadKaryawanTable();
+            updateLaporan();
+            
+            // Initialize icons
+            lucide.createIcons();
+        });
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.classList.remove('tab-active');
+                tab.classList.add('text-white/70');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            // Add active class to selected tab
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            activeTab.classList.remove('text-white/70');
+            activeTab.classList.add('tab-active');
+            
+            if (tabName === 'laporan') {
+                updateLaporan();
+            }
+        }
+
+        // Kategori change handler
+        function handleKategoriChange() {
+            const kategori = document.getElementById('kategoriTransaksi').value;
+            const solarFields = document.getElementById('solarFields');
+            const normalFields = document.getElementById('normalFields');
+            
+            if (kategori === 'Solar') {
+                normalFields.classList.add('hidden');
+                solarFields.classList.remove('hidden');
+            } else {
+                solarFields.classList.add('hidden');
+                normalFields.classList.remove('hidden');
+            }
+        }
+
+        // Calculations
+        function calculateSolarTotal() {
+            const hargaPerLiter = parseFloat(document.getElementById('hargaPerLiter').value) || 0;
+            const jumlahLiter = parseFloat(document.getElementById('jumlahLiter').value) || 0;
+            const total = hargaPerLiter * jumlahLiter;
+            document.getElementById('totalHarga').value = total;
+        }
+
+        function calculateNormalTotal() {
+            const hargaSatuan = parseFloat(document.getElementById('hargaSatuan').value) || 0;
+            const jumlahBarang = parseFloat(document.getElementById('jumlahBarang').value) || 0;
+            const total = hargaSatuan * jumlahBarang;
+            document.getElementById('totalHarga').value = total;
+        }
+
+        // HM input toggle
+        function toggleHMInput() {
+            const inputType = document.getElementById('hmInputType').value;
+            const waktuFields = document.getElementById('hmWaktuFields');
+            const langsungField = document.getElementById('hmLangsungField');
+            
+            if (inputType === 'waktu') {
+                langsungField.classList.add('hidden');
+                waktuFields.classList.remove('hidden');
+            } else {
+                waktuFields.classList.add('hidden');
+                langsungField.classList.remove('hidden');
+                document.getElementById('totalJam').value = document.getElementById('hmLangsung').value || 0;
+            }
+        }
+
+        // HM calculation
+        function calculateHM() {
+            const jamMulai = document.getElementById('jamMulai').value;
+            const jamSelesai = document.getElementById('jamSelesai').value;
+            
+            if (jamMulai && jamSelesai) {
+                const mulai = new Date(`2000-01-01T${jamMulai}`);
+                const selesai = new Date(`2000-01-01T${jamSelesai}`);
+                
+                let diff = (selesai - mulai) / (1000 * 60 * 60);
+                
+                if (diff < 0) {
+                    diff += 24;
+                }
+                
+                document.getElementById('totalJam').value = diff.toFixed(1);
+            }
+        }
+
+        // Form submissions
+        document.getElementById('transaksiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const transaksi = {
+                id: Date.now(),
+                jenis: document.getElementById('jenisTransaksi').value,
+                kategori: document.getElementById('kategoriTransaksi').value,
+                tanggal: document.getElementById('tanggalTransaksi').value,
+                deskripsi: document.getElementById('deskripsiTransaksi').value,
+                total: parseFloat(document.getElementById('totalHarga').value) || 0,
+                bukti: document.getElementById('buktiTransaksi').files[0]?.name || ''
+            };
+            
+            transaksiData.push(transaksi);
+            localStorage.setItem('transaksiData', JSON.stringify(transaksiData));
+            
+            loadTransaksiTable();
+            this.reset();
+            document.getElementById('tanggalTransaksi').value = new Date().toISOString().split('T')[0];
+            document.getElementById('totalHarga').value = '';
+            
+            showNotification('Transaksi berhasil disimpan!', 'success');
+            updateLaporan();
+        });
+
+        document.getElementById('karyawanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const inputType = document.getElementById('hmInputType').value;
+            let totalJam = 0;
+            
+            if (inputType === 'waktu') {
+                totalJam = parseFloat(document.getElementById('totalJam').value) || 0;
+            } else {
+                totalJam = parseFloat(document.getElementById('hmLangsung').value) || 0;
+            }
+            
+            const karyawan = {
+                id: Date.now(),
+                idKaryawan: document.getElementById('idKaryawan').value,
+                nama: document.getElementById('namaKaryawan').value,
+                posisi: document.getElementById('posisiKaryawan').value,
+                shift: document.getElementById('shiftKaryawan').value,
+                totalJam: totalJam,
+                laporanAktivitas: document.getElementById('laporanAktivitas').value
+            };
+            
+            karyawanData.push(karyawan);
+            localStorage.setItem('karyawanData', JSON.stringify(karyawanData));
+            
+            loadKaryawanTable();
+            this.reset();
+            document.getElementById('totalJam').value = '';
+            
+            showNotification('Data karyawan berhasil disimpan!', 'success');
+            updateLaporan();
+        });
+
+        // Table loading
+        function loadTransaksiTable() {
+            const tbody = document.getElementById('transaksiTableBody');
+            tbody.innerHTML = '';
+            
+            transaksiData.forEach(transaksi => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-white/5 transition-all duration-300';
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-white/90">${new Date(transaksi.tanggal).toLocaleDateString('id-ID')}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full font-medium ${transaksi.jenis === 'Pemasukan' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}">
+                            ${transaksi.jenis === 'Pemasukan' ? '💰' : '💸'} ${transaksi.jenis}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-white/90">${getKategoriIcon(transaksi.kategori)} ${transaksi.kategori}</td>
+                    <td class="px-6 py-4 font-bold text-yellow-400">Rp ${transaksi.total.toLocaleString('id-ID')}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex space-x-2">
+                            <button onclick="editTransaksi(${transaksi.id})" class="text-blue-400 hover:text-blue-300 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-500/20">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteTransaksi(${transaksi.id})" class="text-red-400 hover:text-red-300 transition-colors duration-200 p-2 rounded-lg hover:bg-red-500/20">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            lucide.createIcons();
+        }
+
+        function loadKaryawanTable() {
+            const tbody = document.getElementById('karyawanTableBody');
+            tbody.innerHTML = '';
+            
+            karyawanData.forEach(karyawan => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-white/5 transition-all duration-300';
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-white/90 font-medium">${karyawan.idKaryawan}</td>
+                    <td class="px-6 py-4 text-white/90">${karyawan.nama}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full font-medium bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                            ${getPosisiIcon(karyawan.posisi)} ${karyawan.posisi}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-white/90">${getShiftIcon(karyawan.shift)} ${karyawan.shift}</td>
+                    <td class="px-6 py-4 font-bold text-indigo-400">${karyawan.totalJam} jam</td>
+                    <td class="px-6 py-4">
+                        <div class="flex space-x-2">
+                            <button onclick="editKaryawan(${karyawan.id})" class="text-blue-400 hover:text-blue-300 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-500/20">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteKaryawan(${karyawan.id})" class="text-red-400 hover:text-red-300 transition-colors duration-200 p-2 rounded-lg hover:bg-red-500/20">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            lucide.createIcons();
+        }
+
+        // Helper functions for icons
+        function getKategoriIcon(kategori) {
+            const icons = {
+                'Sparepart': '🔧',
+                'Solar': '⛽',
+                'Konsumsi': '🍽️',
+                'Gaji': '💼',
+                'Sewa Alat': '🏗️',
+                'Lain-lain': '📋'
+            };
+            return icons[kategori] || '📋';
+        }
+
+        function getPosisiIcon(posisi) {
+            const icons = {
+                'Operator': '🔧',
+                'Supervisor': '👨‍💼',
+                'Manager': '👔',
+                'Admin': '📋',
+                'Teknisi': '🔨'
+            };
+            return icons[posisi] || '👤';
+        }
+
+        function getShiftIcon(shift) {
+            const icons = {
+                'Pagi': '🌅',
+                'Siang': '☀️',
+                'Malam': '🌙'
+            };
+            return icons[shift] || '⏰';
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transform translate-x-full transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            } text-white`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="w-5 h-5 mr-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(full)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Edit functions
+        function editTransaksi(id) {
+            const transaksi = transaksiData.find(t => t.id === id);
+            if (transaksi) {
+                editingTransaksiId = id;
+                document.getElementById('editTransaksiId').value = id;
+                document.getElementById('editJenisTransaksi').value = transaksi.jenis;
+                document.getElementById('editKategoriTransaksi').value = transaksi.kategori;
+                document.getElementById('editTotalHarga').value = transaksi.total;
+                
+                const modal = document.getElementById('editTransaksiModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function editKaryawan(id) {
+            const karyawan = karyawanData.find(k => k.id === id);
+            if (karyawan) {
+                editingKaryawanId = id;
+                document.getElementById('editKaryawanId').value = id;
+                document.getElementById('editNamaKaryawan').value = karyawan.nama;
+                document.getElementById('editPosisiKaryawan').value = karyawan.posisi;
+                document.getElementById('editTotalJam').value = karyawan.totalJam;
+                
+                const modal = document.getElementById('editKaryawanModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        // Delete functions
+        function deleteTransaksi(id) {
+            if (confirm('Yakin ingin menghapus transaksi ini?')) {
+                transaksiData = transaksiData.filter(t => t.id !== id);
+                localStorage.setItem('transaksiData', JSON.stringify(transaksiData));
+                loadTransaksiTable();
+                updateLaporan();
+                showNotification('Transaksi berhasil dihapus!', 'success');
+            }
+        }
+
+        function deleteKaryawan(id) {
+            if (confirm('Yakin ingin menghapus data karyawan ini?')) {
+                karyawanData = karyawanData.filter(k => k.id !== id);
+                localStorage.setItem('karyawanData', JSON.stringify(karyawanData));
+                loadKaryawanTable();
+                updateLaporan();
+                showNotification('Data karyawan berhasil dihapus!', 'success');
+            }
+        }
+
+        // Edit form submissions
+        document.getElementById('editTransaksiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editTransaksiId').value);
+            const index = transaksiData.findIndex(t => t.id === id);
+            
+            if (index !== -1) {
+                transaksiData[index].jenis = document.getElementById('editJenisTransaksi').value;
+                transaksiData[index].kategori = document.getElementById('editKategoriTransaksi').value;
+                transaksiData[index].total = parseFloat(document.getElementById('editTotalHarga').value);
+                
+                localStorage.setItem('transaksiData', JSON.stringify(transaksiData));
+                loadTransaksiTable();
+                closeEditTransaksiModal();
+                updateLaporan();
+                showNotification('Transaksi berhasil diupdate!', 'success');
+            }
+        });
+
+        document.getElementById('editKaryawanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editKaryawanId').value);
+            const index = karyawanData.findIndex(k => k.id === id);
+            
+            if (index !== -1) {
+                karyawanData[index].nama = document.getElementById('editNamaKaryawan').value;
+                karyawanData[index].posisi = document.getElementById('editPosisiKaryawan').value;
+                karyawanData[index].totalJam = parseFloat(document.getElementById('editTotalJam').value);
+                
+                localStorage.setItem('karyawanData', JSON.stringify(karyawanData));
+                loadKaryawanTable();
+                closeEditKaryawanModal();
+                updateLaporan();
+                showNotification('Data karyawan berhasil diupdate!', 'success');
+            }
+        });
+
+        // Modal close functions
+        function closeEditTransaksiModal() {
+            const modal = document.getElementById('editTransaksiModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function closeEditKaryawanModal() {
+            const modal = document.getElementById('editKaryawanModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Laporan update
+        function updateLaporan() {
+            const totalPemasukan = transaksiData
+                .filter(t => t.jenis === 'Pemasukan')
+                .reduce((sum, t) => sum + t.total, 0);
+            
+            const totalPengeluaran = transaksiData
+                .filter(t => t.jenis === 'Pengeluaran')
+                .reduce((sum, t) => sum + t.total, 0);
+            
+            const saldo = totalPemasukan - totalPengeluaran;
+            
+            document.getElementById('totalPemasukan').textContent = `Rp ${totalPemasukan.toLocaleString('id-ID')}`;
+            document.getElementById('totalPengeluaran').textContent = `Rp ${totalPengeluaran.toLocaleString('id-ID')}`;
+            document.getElementById('saldo').textContent = `Rp ${saldo.toLocaleString('id-ID')}`;
+            
+            // Update category summary
+            updateCategorySummary();
+        }
+
+        function updateCategorySummary() {
+            const kategoriSummary = {};
+            transaksiData.forEach(t => {
+                if (!kategoriSummary[t.kategori]) {
+                    kategoriSummary[t.kategori] = { total: 0, count: 0 };
+                }
+                kategoriSummary[t.kategori].total += t.total;
+                kategoriSummary[t.kategori].count += 1;
+            });
+            
+            const kategoriDiv = document.getElementById('kategoriSummary');
+            kategoriDiv.innerHTML = '';
+            
+            Object.entries(kategoriSummary).forEach(([kategori, data]) => {
+                const div = document.createElement('div');
+                div.className = 'stats-card rounded-xl p-4 text-center';
+                div.innerHTML = `
+                    <div class="text-3xl mb-2">${getKategoriIcon(kategori)}</div>
+                    <h4 class="text-white font-medium mb-1">${kategori}</h4>
+                    <p class="text-yellow-400 font-bold text-lg">Rp ${data.total.toLocaleString('id-ID')}</p>
+                    <p class="text-white/60 text-sm">${data.count} transaksi</p>
+                `;
+                kategoriDiv.appendChild(div);
+            });
+        }
+
+        // Export functions
+        function exportTransaksiToExcel() {
+            const ws = XLSX.utils.json_to_sheet(transaksiData.map(t => ({
+                'Tanggal': new Date(t.tanggal).toLocaleDateString('id-ID'),
+                'Jenis': t.jenis,
+                'Kategori': t.kategori,
+                'Deskripsi': t.deskripsi,
+                'Total': t.total
+            })));
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Transaksi');
+            XLSX.writeFile(wb, 'data-transaksi.xlsx');
+            
+            showNotification('Data transaksi berhasil diekspor ke Excel!', 'success');
+        }
+
+        function exportTransaksiToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.text('Laporan Transaksi - PT PANDAWA JAYA BERSATU', 20, 20);
+            
+            const tableData = transaksiData.map(t => [
+                new Date(t.tanggal).toLocaleDateString('id-ID'),
+                t.jenis,
+                t.kategori,
+                `Rp ${t.total.toLocaleString('id-ID')}`
+            ]);
+            
+            doc.autoTable({
+                head: [['Tanggal', 'Jenis', 'Kategori', 'Total']],
+                body: tableData,
+                startY: 30
+            });
+            
+            doc.save('laporan-transaksi.pdf');
+            showNotification('Laporan transaksi berhasil diekspor ke PDF!', 'success');
+        }
+
+        function exportKaryawanToExcel() {
+            const ws = XLSX.utils.json_to_sheet(karyawanData.map(k => ({
+                'ID Karyawan': k.idKaryawan,
+                'Nama': k.nama,
+                'Posisi': k.posisi,
+                'Shift': k.shift,
+                'Total HM': k.totalJam,
+                'Laporan Aktivitas': k.laporanAktivitas
+            })));
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Karyawan');
+            XLSX.writeFile(wb, 'data-karyawan.xlsx');
+            
+            showNotification('Data karyawan berhasil diekspor ke Excel!', 'success');
+        }
+
+        function exportKaryawanToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.text('Laporan Karyawan - PT PANDAWA JAYA BERSATU', 20, 20);
+            
+            const tableData = karyawanData.map(k => [
+                k.idKaryawan,
+                k.nama,
+                k.posisi,
+                k.shift,
+                `${k.totalJam} jam`
+            ]);
+            
+            doc.autoTable({
+                head: [['ID', 'Nama', 'Posisi', 'Shift', 'Total HM']],
+                body: tableData,
+                startY: 30
+            });
+            
+            doc.save('laporan-karyawan.pdf');
+            showNotification('Laporan karyawan berhasil diekspor ke PDF!', 'success');
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966b56ccd40b294b',t:'MTc1Mzc3ODcxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
